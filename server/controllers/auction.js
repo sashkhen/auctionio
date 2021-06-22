@@ -25,6 +25,6 @@ exports.updateItem = async (req, res) => {
   {
     new: true,
     runValidators: true,
-  }).exec();
+  }).populate('assets').exec();
   res.json({ auction });
 };

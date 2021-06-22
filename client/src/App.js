@@ -1,45 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import socket from './utils/socket';
-
-const INITIAL_STATE = {
-  loading: false,
-  // error: false,
-};
+import Auctions from './containers/Auctions';
+import Assets from './containers/Assets';
+import Auction from './containers/Auction';
+import AuctionForm from './containers/AuctionForm';
 
 function App() {
-  const [auctions, setAuctions] = useState([]);
-  const [state, setState] = useState(INITIAL_STATE);
-
-  useEffect(() => {
-    socket.connect();
-    setState({
-      ...INITIAL_STATE,
-      loading: true,
-    });
-
-    socket.on('API:auction:all', (data) => {
-      setAuctions(data);
-      setState({...INITIAL_STATE});
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  if (state.loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!auctions) {
-    return <p>Ooops... there are no auctions yet</p>;
-  }
-
-  return <div>
-    {auctions.map((auction, i) => {
-      return <AuctionItem {...auction} key={auction.id} />;
-    })}
-  </div>;
+  return (
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/auctions">Auctions</Link>
+            </li>
+            <li>
+              <Link to="/assets">Assets</Link>
+            </li>
+          </ul>
+        </nav>
+        <Switch>
+          <Route path="/auctions">
+            <Auctions />
+          </Route>
+          <Route path="/auction/:id">
+            <Auction />
+          </Route>
+          <Route path="/auction">
+            <AuctionForm />
+          </Route>
+          <Route path="/assets">
+            <Assets />
+          </Route>
+          <Route path="/">
+            <Auctions />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  );
 }
 
 function AuctionItem(props) {
@@ -54,17 +57,16 @@ function AuctionItem(props) {
       </div>
       {expanded ? <Auction {...props} /> : null}
     </div>
-  )
+  );
 }
 
-function Auction({ id, lastBid }) {
+function Auction1({ id, lastBid }) {
   const [lastBidder, setLastBidder] = useState(lastBid);
 
   console.log({ lastBid });
 
   useEffect(() => {
     socket.on('auction:update', (data) => {
-
       if (data.id === id && data.user) {
         setLastBidder(data.user);
       }
@@ -89,11 +91,13 @@ function Auction({ id, lastBid }) {
     socket.emit('bid:create', id);
   }
 
-  return <div>
-    <p>Content for auction {id}</p>
-    <p>Last bidder id: {lastBidder || 'none'}</p>
-    <button onClick={placeBid}>Place bid</button>
-  </div>;
+  return (
+    <div>
+      <p>Content for auction {id}</p>
+      <p>Last bidder id: {lastBidder || 'none'}</p>
+      <button onClick={placeBid}>Place bid</button>
+    </div>
+  );
 }
 
 export default App;
