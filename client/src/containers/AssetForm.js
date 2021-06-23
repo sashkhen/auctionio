@@ -46,7 +46,7 @@ function AssetForm({ onSuccess }) {
 }
 
 AssetForm.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
 };
 
 export default AssetForm;

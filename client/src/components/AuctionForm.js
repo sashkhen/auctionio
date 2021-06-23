@@ -80,7 +80,6 @@ function AuctionForm({
   auction = null,
   assets = [],
   onSubmit,
-  loading = false,
   complete = false,
   error = false,
 }) {
@@ -185,7 +184,7 @@ function AuctionForm({
 
 AssetsSelect.propTypes = {
   list: PropTypes.arrayOf(assetPropType),
-  selected: PropTypes.arrayOf(assetPropType),
+  selected: PropTypes.arrayOf(PropTypes.string), // asset._id
   onChange: PropTypes.func.isRequired,
 };
 
@@ -193,7 +192,6 @@ AuctionForm.propTypes = {
   auction: auctionPropType,
   assets: PropTypes.arrayOf(assetPropType),
   onSubmit: PropTypes.func.isRequired,
-  loading: PropTypes.bool,
   complete: PropTypes.bool,
   error: PropTypes.bool,
 };
