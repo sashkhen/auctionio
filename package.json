@@ -1,0 +1,24 @@
+{
+  "name": "auctionio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client && npm i && npm run start",
+    "server": "cd server && npm i && npm run start",
+    "dev": "concurrently \"npm run server\" \"npm run client\" --names \"📦,💻\" --prefix name"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sashkhen/auctionio.git"
+  },
+  "author": "sashkhen056@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sashkhen/auctionio/issues"
+  },
+  "homepage": "https://github.com/sashkhen/auctionio#readme",
+  "devDependencies": {
+    "concurrently": "^6.2.0"
+  }
+}
