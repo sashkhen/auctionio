@@ -47,7 +47,6 @@ const auctionScheduler = (handler, initialItems = []) => {
         existingAuction.end.start();
       });
 
-    console.log({auctions});
     return auctions;
   };
 

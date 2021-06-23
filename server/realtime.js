@@ -52,18 +52,15 @@ function initSocket(io) {
       };
 
       if (!isAuctionActive) {
-        console.log('not active');
         socket.emit('auction:update', { event: 'error', error: 'auction closed' });
         return;
       }
 
       if (!isBidValid) {
-        console.log('not valid');
         socket.emit('auction:update', { event: 'error', auction, error: 'bid invalid' });
         return;
       }
 
-      console.log('active');
       const updated = await Auction.findByIdAndUpdate(
         id,
         updates,
