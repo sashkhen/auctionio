@@ -4,5 +4,3 @@ const moment = require('moment');
 exports.isInFuture = (dateString) => {
   return moment(dateString).diff(moment(new Date())) > 0;
 }
-
-

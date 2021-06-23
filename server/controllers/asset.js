@@ -28,5 +28,3 @@ exports.updateItem = async (req, res) => {
   }).exec();
   res.json({ asset });
 };
-
-
