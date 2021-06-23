@@ -1,7 +1,11 @@
 import moment from 'moment';
 import { useEffect } from 'react';
 import Select from 'react-select';
+import { FormField, TextInput, toaster } from 'evergreen-ui';
+import StyledForm from './StyledForm';
+import Button from './Button';
 import useForm from '../utils/useForm';
+import { isInFuture } from '../utils';
 
 function composeDate(date, time) {
   return moment(`${date} ${time}`, 'YYYY-MM-DD hh:mm:ss').toISOString();
@@ -28,6 +32,27 @@ function parseDate(dateTime) {
   };
 }
 
+function validate(data) {
+  const isEmpty = Object.keys(data).some((key) =>
+    Array.isArray(data[key]) ? !data[key] || !data[key].length : !data[key],
+  );
+  const hasDatesInPast = [data.start, data.end].some(
+    (date) => !isInFuture(date),
+  );
+  const hasIncorrectDate = !isInFuture(data.end, data.start);
+  const errors = [
+    isEmpty && 'All fields are required',
+    hasDatesInPast && 'All dates must be in future',
+    hasIncorrectDate && 'End date must be after start date',
+  ].filter(Boolean);
+
+  if (errors) {
+    return { errors, valid: false };
+  }
+
+  return { valid: true };
+}
+
 function AssetsSelect({ list, selected, onChange }) {
   const options = createOptions(list);
   const value = createOptions(selected);
@@ -49,7 +74,7 @@ function AssetsSelect({ list, selected, onChange }) {
 }
 
 export default function AuctionForm({
-  auction = {},
+  auction = null,
   assets = [],
   onSubmit,
   loading = false,
@@ -70,7 +95,7 @@ export default function AuctionForm({
     if (complete && !error) {
       clearForm();
     }
-  }, [complete, error]);
+  }, [complete, error, clearForm]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -81,33 +106,44 @@ export default function AuctionForm({
       start: composeDate(inputs.startDate, inputs.startTime),
       end: composeDate(inputs.endDate, inputs.endTime),
     };
+    const validation = validate(payload);
+
+    if (validation.errors && validation.errors.length) {
+      toaster.danger(validation.errors.join(', '));
+      return;
+    }
 
     onSubmit(payload);
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <StyledForm>
       <h2>{auction ? 'Update' : 'Create'} Auction</h2>
-      <fieldset>
-        <label htmlFor="name">Auction Name</label>
-        <input
+      <FormField label="Auction Name" labelFor="name" isRequired>
+        <TextInput
           type="text"
           name="name"
           placeholder="Auction Name"
           value={inputs.name || ''}
           onChange={handleChange}
         />
-      </fieldset>
+      </FormField>
+      <AssetsSelect
+        list={assets || []}
+        selected={inputs.assets || []}
+        onChange={handleChange}
+      />
 
-      <fieldset>
-        <label htmlFor="startDate">Start Date</label>
+      <FormField label="Start Date" labelFor="startDate" isRequired>
         <input
           type="date"
           name="startDate"
           value={inputs.startDate || ''}
           onChange={handleChange}
         />
-        <label htmlFor="startTime">Start Time</label>
+      </FormField>
+
+      <FormField label="Start Time" labelFor="startTime" isRequired>
         <input
           type="time"
           name="startTime"
@@ -115,17 +151,18 @@ export default function AuctionForm({
           onChange={handleChange}
           required
         />
-      </fieldset>
+      </FormField>
 
-      <fieldset>
-        <label htmlFor="endDate">End Date</label>
+      <FormField label="End Date" labelFor="endDate" isRequired>
         <input
           type="date"
           name="endDate"
           value={inputs.endDate || ''}
           onChange={handleChange}
         />
-        <label htmlFor="endTime">End Time</label>
+      </FormField>
+
+      <FormField label="End Time" labelFor="endTime" isRequired>
         <input
           type="time"
           name="endTime"
@@ -133,13 +170,10 @@ export default function AuctionForm({
           onChange={handleChange}
           required
         />
-      </fieldset>
-      <AssetsSelect
-        list={assets || []}
-        selected={inputs.assets || []}
-        onChange={handleChange}
-      />
-      <input type="submit" value="Save" />
-    </form>
+      </FormField>
+      <Button type="submit" appearance="primary" onClick={handleSubmit}>
+        Save
+      </Button>
+    </StyledForm>
   );
 }

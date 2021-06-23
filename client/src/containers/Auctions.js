@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { Spinner, Pane, toaster } from 'evergreen-ui';
+import styled from 'styled-components';
+
+import AuctionsList from '../components/AuctionsList';
+import Button from '../components/Button';
+import EmptyState from '../components/EmptyState';
 import useEndpoint from '../utils/useEndpoint';
+import { getAuctionWithAssets } from '../utils/auction';
+
+const Layout = styled.div`
+  padding: 24px 0;
+  min-height: calc(100% - 24px * 2);
+  box-sizing: border-box;
+`;
+
+const StyledPane = styled(Pane)`
+  display: flex;
+  justify-content: center;
+  height: 200px;
+  align-items: center;
+`;
 
 export default function Auctions() {
   const [auctions, setAuctions] = useState([]);
@@ -9,35 +29,44 @@ export default function Auctions() {
 
   useEffect(() => {
     if (data) {
-      setAuctions(data?.auctions || []);
+      const auctionsData = (data?.auctions || []).map(getAuctionWithAssets);
+      setAuctions(auctionsData);
     }
-  }, [data]);
 
-  if (loading) {
-    return 'Loading...';
-  }
+    if (error) {
+      toaster.danger('Ooops... something went wrong');
+    }
+  }, [data, error]);
 
-  if (error) {
-    return 'Ooops... something went wrong';
-  }
+  const getContent = () => {
+    if (loading) {
+      return (
+        <StyledPane>
+          <Spinner />
+        </StyledPane>
+      );
+    }
 
-  if (!data) {
-    return 'No auctions found';
-  }
+    if (!data || !data.auctions.length) {
+      return <EmptyState message="Looks like there is no auctions yet" />;
+    }
+
+    return <AuctionsList auctions={auctions} />;
+  };
 
   return (
-    <div>
+    <Layout>
       <h2>Auctions</h2>
-      <ul>
-        {auctions.map((item) => (
-          <li key={item._id}>
-            <Link to={`/auction/${item._id}`}>{item.name}</Link>
-          </li>
-        ))}
-      </ul>
-      <button type="button" onClick={() => history.push('/auction')}>
+
+      <Button
+        type="button"
+        onClick={() => history.push('/auction')}
+        appearance="primary"
+      >
         Create new
-      </button>
-    </div>
+      </Button>
+
+      <div>{getContent()}</div>
+    </Layout>
   );
 }

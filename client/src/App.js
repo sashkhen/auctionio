@@ -1,102 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import socket from './utils/socket';
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+import { SocketContext, socket } from './utils/socket';
 import Auctions from './containers/Auctions';
 import Assets from './containers/Assets';
 import Auction from './containers/Auction';
+import Asset from './containers/Asset';
 import AuctionForm from './containers/AuctionForm';
+import AssetForm from './containers/AssetForm';
+import EmptyState from './components/EmptyState';
+import Page from './components/Page';
 
 function App() {
   return (
-    <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/auctions">Auctions</Link>
-            </li>
-            <li>
-              <Link to="/assets">Assets</Link>
-            </li>
-          </ul>
-        </nav>
-        <Switch>
-          <Route path="/auctions">
-            <Auctions />
-          </Route>
-          <Route path="/auction/:id">
-            <Auction />
-          </Route>
-          <Route path="/auction">
-            <AuctionForm />
-          </Route>
-          <Route path="/assets">
-            <Assets />
-          </Route>
-          <Route path="/">
-            <Auctions />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
-  );
-}
-
-function AuctionItem(props) {
-  const [expanded, setExpanded] = useState(false);
-  const { name } = props;
-
-  return (
-    <div>
-      <div>
-        <p>{name}</p>
-        <button onClick={() => setExpanded(!expanded)}>Enter</button>
-      </div>
-      {expanded ? <Auction {...props} /> : null}
-    </div>
-  );
-}
-
-function Auction1({ id, lastBid }) {
-  const [lastBidder, setLastBidder] = useState(lastBid);
-
-  console.log({ lastBid });
-
-  useEffect(() => {
-    socket.on('auction:update', (data) => {
-      if (data.id === id && data.user) {
-        setLastBidder(data.user);
-      }
-    });
-
-    return () => {
-      socket.off('auction:update');
-    };
-  }, []);
-
-  useEffect(() => {
-    socket.emit('user:join', id);
-    console.log('connected to auction');
-
-    return () => {
-      socket.emit('user:leave', id);
-      console.log('disconnected from auction');
-    };
-  }, [id]);
-
-  function placeBid() {
-    socket.emit('bid:create', id);
-  }
-
-  return (
-    <div>
-      <p>Content for auction {id}</p>
-      <p>Last bidder id: {lastBidder || 'none'}</p>
-      <button onClick={placeBid}>Place bid</button>
-    </div>
+    <SocketContext.Provider value={socket}>
+      <Router>
+        <Page>
+          <Switch>
+            <Route path="/auctions" component={Auctions} />
+            <Route path="/auction/:id" component={Auction} />
+            <Route path="/auction" component={AuctionForm} />
+            <Route path="/assets" component={Assets} />
+            <Route path="/asset/:id" component={Asset} />
+            <Route path="/asset" component={AssetForm} />
+            <Route exact path="/" component={Auctions} />
+            <Route path="*" component={EmptyState} />
+          </Switch>
+        </Page>
+      </Router>
+    </SocketContext.Provider>
   );
 }
 

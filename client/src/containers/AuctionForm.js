@@ -1,7 +1,16 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+import { Spinner, Pane, toaster } from 'evergreen-ui';
 import useEndpoint from '../utils/useEndpoint';
 import Form from '../components/AuctionForm';
+
+const StyledPane = styled(Pane)`
+  display: flex;
+  justify-content: center;
+  height: 200px;
+  align-items: center;
+`;
 
 export default function AuctionForm({ auction, onSuccess }) {
   const history = useHistory();
@@ -25,6 +34,9 @@ export default function AuctionForm({ auction, onSuccess }) {
     },
     false,
   );
+  const assets = (assetsResp?.assets || []).filter(
+    (item) => item.status !== 'SOLD',
+  );
 
   useEffect(() => {
     if (auctionComplete && !auctionError) {
@@ -34,24 +46,39 @@ export default function AuctionForm({ auction, onSuccess }) {
 
       return history.push(`/auction/${auctionResp.auction._id}`);
     }
-  }, [auctionComplete, auctionError, auctionResp]);
+
+    if (assetsError) {
+      toaster.danger('There were no assets found');
+    }
+
+    if (auctionError) {
+      toaster.danger('Please check provided data and try again');
+    }
+  }, [
+    auctionComplete,
+    auctionError,
+    auctionResp,
+    assetsError,
+    history,
+    onSuccess,
+  ]);
 
   function handleSubmit(payload) {
     postAuction(payload);
   }
 
   if (assetsLoading) {
-    return 'Loading...';
-  }
-
-  if (assetsError) {
-    return 'Assets not found';
+    return (
+      <StyledPane>
+        <Spinner />
+      </StyledPane>
+    );
   }
 
   return (
     <Form
       auction={auction}
-      assets={assetsResp.assets}
+      assets={assets}
       onSubmit={handleSubmit}
       loading={auctionLoading}
       error={auctionError}

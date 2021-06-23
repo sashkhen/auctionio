@@ -1,11 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-
-// const API_URL = 'http://127.0.0.1:4001/';
-const API_URL = 'http://localhost:4001/';
+import { ENDPOINT } from '../variables';
 
 const instance = axios.create({
-  baseURL: API_URL,
+  baseURL: ENDPOINT,
   timeout: 1000,
 });
 

@@ -24,6 +24,10 @@ const Asset = new mongoose.Schema({
     type: String,
     default: 'AVAILABLE'
   },
+  activeAuction: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Auction',
+  },
 });
 
 module.exports = mongoose.model('Asset', Asset);

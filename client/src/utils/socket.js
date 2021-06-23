@@ -1,10 +1,6 @@
-import { io } from 'socket.io-client';
+import React from 'react';
+import socketIo from 'socket.io-client';
+import { ENDPOINT } from '../variables';
 
-const ENDPOINT = 'http://127.0.0.1:4001';
-const socket = io(ENDPOINT, { autoConnect: false });
-
-socket.onAny((event, ...args) => {
-  console.log(event, args);
-});
-
-export default socket;
+export const socket = socketIo.connect(ENDPOINT);
+export const SocketContext = React.createContext();

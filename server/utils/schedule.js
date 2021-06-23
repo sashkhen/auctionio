@@ -11,5 +11,3 @@ const createJob = (date, callback) => {
 };
 
 exports.createJob = createJob;
-
-

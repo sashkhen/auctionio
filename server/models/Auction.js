@@ -26,6 +26,15 @@ const Auction = new mongoose.Schema({
     type: Date,
     required: 'Please enter a start date!',
   },
+  lastBid: {
+    userId: {
+      type: String,
+    },
+    value: {
+      type: Number,
+      default: 0,
+    },
+  }
 });
 
 Auction.pre('save', async function(next) {
