@@ -13,6 +13,7 @@ router.get('/auctions', catchErrors(auctionController.getItems));
 router.post('/auction', catchErrors(auctionController.createItem));
 router.get('/auction/:id', catchErrors(auctionController.getItem));
 router.post('/auction/:id', catchErrors(auctionController.updateItem));
+router.delete('/auction/:id', catchErrors(auctionController.deleteItem));
 
 router.get('/assets', catchErrors(assetController.getItems));
 router.post('/asset', catchErrors(assetController.createItem));

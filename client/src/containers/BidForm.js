@@ -1,15 +1,11 @@
 import { useEffect, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { toaster } from 'evergreen-ui';
 
 import Form from '../components/BidForm';
 import { SocketContext } from '../utils/socket';
 
-export default function BidForm({
-  id,
-  lastBidValue = 0,
-  onSuccess,
-  disabled = false,
-}) {
+function BidForm({ id, lastBidValue = 0, onSuccess, disabled = false }) {
   const socket = useContext(SocketContext);
   const [state, setState] = useState({
     loading: false,
@@ -63,3 +59,12 @@ export default function BidForm({
     />
   );
 }
+
+BidForm.propTypes = {
+  id: PropTypes.string.isRequired,
+  lastBidValue: PropTypes.number,
+  onSuccess: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+export default BidForm;

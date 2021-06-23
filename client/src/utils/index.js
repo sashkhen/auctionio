@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 export const isInFuture = (dateString, dateStrToCompare) => {
-  return moment(dateString).diff(moment(dateStrToCompare)) > -1;
+  return moment(dateString).diff(moment(dateStrToCompare)) > 0;
 };
 
 export function isIOSSafari() {

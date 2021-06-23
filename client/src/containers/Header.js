@@ -90,6 +90,7 @@ const StyledNavLink = styled(NavLink)`
     border-bottom-width: 0;
     border-left-width: 1px;
     padding: 16px 32px;
+    justify-content: flex-end;
   }
 
   &:hover {

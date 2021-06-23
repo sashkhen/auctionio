@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyledBox = styled.div`
   display: grid;
@@ -14,7 +15,7 @@ const StyledBox = styled.div`
   }
 `;
 
-export default function EmptyState({ message }) {
+function EmptyState({ message }) {
   return (
     <StyledBox>
       <div>
@@ -24,3 +25,9 @@ export default function EmptyState({ message }) {
     </StyledBox>
   );
 }
+
+EmptyState.propTypes = {
+  message: PropTypes.string,
+};
+
+export default EmptyState;

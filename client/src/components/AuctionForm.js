@@ -1,11 +1,13 @@
 import moment from 'moment';
 import { useEffect } from 'react';
-import Select from 'react-select';
+import PropTypes from 'prop-types';
 import { FormField, TextInput, toaster } from 'evergreen-ui';
 import StyledForm from './StyledForm';
+import StyledSelect from './StyledSelect';
 import Button from './Button';
 import useForm from '../utils/useForm';
 import { isInFuture } from '../utils';
+import { auctionPropType, assetPropType } from '../propTypes';
 
 function composeDate(date, time) {
   return moment(`${date} ${time}`, 'YYYY-MM-DD hh:mm:ss').toISOString();
@@ -63,9 +65,10 @@ function AssetsSelect({ list, selected, onChange }) {
   }
 
   return (
-    <Select
+    <StyledSelect
       isMulti
       name="assets"
+      placeholder="Select assets"
       options={options}
       defaultValue={value}
       onChange={handleChange}
@@ -73,7 +76,7 @@ function AssetsSelect({ list, selected, onChange }) {
   );
 }
 
-export default function AuctionForm({
+function AuctionForm({
   auction = null,
   assets = [],
   onSubmit,
@@ -128,11 +131,13 @@ export default function AuctionForm({
           onChange={handleChange}
         />
       </FormField>
-      <AssetsSelect
-        list={assets || []}
-        selected={inputs.assets || []}
-        onChange={handleChange}
-      />
+      <FormField label="Auction Assets" labelFor="assets" isRequired>
+        <AssetsSelect
+          list={assets || []}
+          selected={inputs.assets || []}
+          onChange={handleChange}
+        />
+      </FormField>
 
       <FormField label="Start Date" labelFor="startDate" isRequired>
         <input
@@ -177,3 +182,20 @@ export default function AuctionForm({
     </StyledForm>
   );
 }
+
+AssetsSelect.propTypes = {
+  list: PropTypes.arrayOf(assetPropType),
+  selected: PropTypes.arrayOf(assetPropType),
+  onChange: PropTypes.func.isRequired,
+};
+
+AuctionForm.propTypes = {
+  auction: auctionPropType,
+  assets: PropTypes.arrayOf(assetPropType),
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  complete: PropTypes.bool,
+  error: PropTypes.bool,
+};
+
+export default AuctionForm;

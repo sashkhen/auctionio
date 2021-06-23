@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Spinner, Pane, toaster } from 'evergreen-ui';
 import useEndpoint from '../utils/useEndpoint';
 import Form from '../components/AuctionForm';
+import { auctionPropType } from '../propTypes';
 
 const StyledPane = styled(Pane)`
   display: flex;
@@ -12,7 +14,7 @@ const StyledPane = styled(Pane)`
   align-items: center;
 `;
 
-export default function AuctionForm({ auction, onSuccess }) {
+function AuctionForm({ auction, onSuccess }) {
   const history = useHistory();
   const {
     data: assetsResp,
@@ -86,3 +88,10 @@ export default function AuctionForm({ auction, onSuccess }) {
     />
   );
 }
+
+AuctionForm.propTypes = {
+  auction: auctionPropType,
+  onSuccess: PropTypes.func,
+};
+
+export default AuctionForm;

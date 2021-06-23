@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { Badge } from 'evergreen-ui';
+import { assetPropType } from '../propTypes';
 
 const DEFAULT_IMAGE =
   'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/a28bb586186241.5d9228d24780f.gif';
@@ -40,8 +43,16 @@ const StyledType = styled.div`
   grid-area: type;
   align-self: start;
 
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
   opacity: 0.7;
   font-size: 14px;
+
+  > * {
+    margin-right: 4px;
+  }
 `;
 const StyledPicture = styled.img`
   grid-area: image;
@@ -50,17 +61,24 @@ const StyledPicture = styled.img`
   object-fit: cover;
 `;
 
-export function AssetItem({ asset }) {
+export function AssetItem({ asset, withStatus }) {
   return (
     <StyledItem key={asset._id}>
-      <StyledPicture src={asset.photo || DEFAULT_IMAGE} />
+      <StyledPicture src={asset.picture || DEFAULT_IMAGE} />
       <StyledName>{asset.name}</StyledName>
-      <StyledType>{asset.type}</StyledType>
+      <StyledType>
+        <span>{asset.type}</span>
+        {withStatus && (
+          <Badge color={asset.status === 'SOLD' ? 'red' : 'blue'}>
+            {asset.status}
+          </Badge>
+        )}
+      </StyledType>
     </StyledItem>
   );
 }
 
-export default function AssetsList({ assets = [], withTitle = true }) {
+function AssetsList({ assets = [], withTitle = true, withStatus = false }) {
   const title =
     !assets || !assets.length ? 'There are no assets yet...' : 'Assets';
   const titleTag = withTitle ? <h3>{title}</h3> : null;
@@ -70,9 +88,21 @@ export default function AssetsList({ assets = [], withTitle = true }) {
       {titleTag}
       <StyledList>
         {assets.map((item) => (
-          <AssetItem asset={item} key={item._id} />
+          <AssetItem asset={item} key={item._id} withStatus={withStatus} />
         ))}
       </StyledList>
     </div>
   );
 }
+AssetItem.propTypes = {
+  asset: assetPropType.isRequired,
+  withStatus: PropTypes.bool,
+};
+
+AssetsList.propTypes = {
+  assets: PropTypes.arrayOf(assetPropType),
+  withTitle: PropTypes.bool,
+  withStatus: PropTypes.bool,
+};
+
+export default AssetsList;

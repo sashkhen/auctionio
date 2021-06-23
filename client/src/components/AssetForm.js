@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
-import Select from 'react-select';
+import PropTypes from 'prop-types';
 import { FormField, TextInput } from 'evergreen-ui';
 import StyledForm from './StyledForm';
+import StyledSelect from './StyledSelect';
 import Button from './Button';
 import useForm from '../utils/useForm';
-import { ASSET_TYPE_OPTIONS } from '../variables';
+import { ASSET_TYPE_OPTIONS } from '../consts';
 
 const options = ASSET_TYPE_OPTIONS;
 
-export default function AssetForm({
+function AssetForm({
   onSubmit,
   loading = false,
   complete = false,
@@ -43,10 +44,35 @@ export default function AssetForm({
           onChange={handleChange}
         />
       </FormField>
-      <Select name="type" options={options} onChange={onSelect} />
+      <FormField label="Asset Picture" labelFor="picture">
+        <TextInput
+          type="text"
+          name="picture"
+          placeholder="Paste link to the image here"
+          value={inputs.picture || ''}
+          onChange={handleChange}
+        />
+      </FormField>
+      <FormField label="Asset Type" labelFor="type">
+        <StyledSelect
+          name="type"
+          options={options}
+          onChange={onSelect}
+          placeholder="Select type"
+        />
+      </FormField>
       <Button type="submit" appearance="primary" onClick={handleSubmit}>
         Save
       </Button>
     </StyledForm>
   );
 }
+
+AssetForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  complete: PropTypes.bool,
+  error: PropTypes.bool,
+};
+
+export default AssetForm;

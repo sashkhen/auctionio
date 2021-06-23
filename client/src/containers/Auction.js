@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Spinner, Pane, toaster } from 'evergreen-ui';
 import AuctionForm from './AuctionForm';
@@ -32,6 +32,7 @@ const checkEditable = (auction) =>
   ['ACTIVE', 'COMPLETE'].indexOf(getStatus(auction).value) === -1;
 
 export default function Auction() {
+  const history = useHistory();
   const { id } = useParams();
   const socket = useContext(SocketContext);
   const [isEditMode, setEditMode] = useState(false);
@@ -40,6 +41,18 @@ export default function Auction() {
   const { data, loading, error } = useEndpoint({
     url: id ? `/auction/${id || ''}` : '',
   });
+  const {
+    data: deletePayload,
+    loading: deleteLoading,
+    error: deleteError,
+    dispatch: deleteAuction,
+  } = useEndpoint(
+    {
+      url: id ? `/auction/${id || ''}` : '',
+      method: 'DELETE',
+    },
+    false,
+  );
 
   useEffect(() => {
     if (data) {
@@ -52,7 +65,15 @@ export default function Auction() {
     if (error) {
       toaster.danger('Ooops... something went wrong');
     }
-  }, [data, error]);
+
+    if (deleteError) {
+      toaster.danger('Cannot delete auction');
+    }
+
+    if (deletePayload) {
+      return history.push('/auctions');
+    }
+  }, [data, error, deletePayload, deleteError, history]);
 
   useEffect(() => {
     const onUpdate = (data) => {
@@ -104,18 +125,28 @@ export default function Auction() {
       ) : (
         <>
           <AuctionView auction={auction} isActive={isActive} />
-          <StyledControls>
+          <div>
             <BidForm
               id={id}
               lastBidValue={auction?.lastBid?.value}
               onSuccess={updateAuction}
               disabled={!isActive || !auction?.assets?.length}
             />
+          </div>
+          <StyledControls>
             <Button
               onClick={() => setEditMode(true)}
               disabled={!checkEditable(auction)}
             >
               Edit
+            </Button>
+            <Button
+              onClick={() => deleteAuction()}
+              disabled={isActive || deleteLoading}
+              appearance="primary"
+              intent="danger"
+            >
+              Delete
             </Button>
           </StyledControls>
           <AssetsList assets={auction?.assets} />

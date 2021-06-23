@@ -1,5 +1,7 @@
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import AuctionItem from './AuctionItem';
+import { auctionPropType } from '../propTypes';
 
 const StyledList = styled.ul`
   display: grid;
@@ -12,7 +14,7 @@ const StyledList = styled.ul`
   }
 `;
 
-export default function AuctionsList({ auctions }) {
+function AuctionsList({ auctions }) {
   return (
     <StyledList>
       {auctions.map((item) => (
@@ -21,3 +23,9 @@ export default function AuctionsList({ auctions }) {
     </StyledList>
   );
 }
+
+AuctionsList.propTypes = {
+  auctions: PropTypes.arrayOf(auctionPropType),
+};
+
+export default AuctionsList;

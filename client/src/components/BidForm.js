@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import StyledForm from './StyledForm';
 import Button from './Button';
@@ -7,9 +8,11 @@ const DEFAULT_STEP = 5;
 
 const VerticalForm = styled(StyledForm)`
   grid-auto-flow: column;
+  align-items: center;
+  margin: 8px 0;
 `;
 
-export default function BidForm({
+function BidForm({
   defaultValue = 0,
   onSubmit,
   loading = false,
@@ -52,3 +55,12 @@ export default function BidForm({
     </VerticalForm>
   );
 }
+
+BidForm.propTypes = {
+  defaultValue: PropTypes.number,
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool,
+};
+
+export default BidForm;

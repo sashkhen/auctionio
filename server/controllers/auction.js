@@ -94,3 +94,10 @@ exports.updateItem = async (req, res) => {
   schedule([auction]);
   res.json({ auction });
 };
+
+exports.deleteItem = async (req, res) => {
+  const { id } = req.params;
+  await Auction.findOneAndDelete({ _id: id }).exec();
+
+  res.json({ id });
+};

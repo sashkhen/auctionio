@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import useEndpoint from '../utils/useEndpoint';
 import Form from '../components/AssetForm';
 
-export default function AssetForm({ onSuccess }) {
+function AssetForm({ onSuccess }) {
   const history = useHistory();
   const {
     data,
@@ -43,3 +44,9 @@ export default function AssetForm({ onSuccess }) {
     />
   );
 }
+
+AssetForm.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+};
+
+export default AssetForm;

@@ -4,13 +4,18 @@ const Auction = mongoose.model('Auction');
 const { lockAssets, unlockAssets, sellAssets } = require('./controllers/auction');
 
 async function updateAuction(io, { id, key, auction }) {
+  const upToDate = await Auction.findById(auction._id);
+
+  if (!upToDate) {
+    return;
+  }
+
   io.to(id).emit('auction:update', { event: key, auction });
 
   if (key === 'start') {
     return lockAssets(auction._id);
   }
 
-  const upToDate = await Auction.findById(auction._id);
   const { value } = upToDate.lastBid;
 
   if (key === 'end' && value) {

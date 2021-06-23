@@ -1,8 +1,8 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyledBid = styled.div`
   display: grid;
-  align-self: end;
   color: rgba(0, 0, 0, 0.7);
   font-size: 14px;
 
@@ -15,7 +15,7 @@ const StyledBid = styled.div`
   }
 `;
 
-export default function AuctionBid({ value, userId, style }) {
+function AuctionBid({ value, userId, style }) {
   if (!value) {
     return <StyledBid />;
   }
@@ -29,3 +29,11 @@ export default function AuctionBid({ value, userId, style }) {
     </StyledBid>
   );
 }
+
+AuctionBid.propTypes = {
+  value: PropTypes.number,
+  userId: PropTypes.string,
+  style: PropTypes.object,
+};
+
+export default AuctionBid;

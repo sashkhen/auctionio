@@ -48,7 +48,7 @@ export default function Assets() {
       return <EmptyState message="Looks like there is no assets yet" />;
     }
 
-    return <AssetsList assets={assets} withTitle={false} />;
+    return <AssetsList assets={assets} withTitle={false} withStatus={true} />;
   };
 
   return (

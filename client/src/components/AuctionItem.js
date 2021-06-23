@@ -11,6 +11,7 @@ import {
 } from './AuctionStyles';
 import AuctionBid from './AuctionBid';
 import { getStatus, decorateDate, getHelpText } from '../utils/auction';
+import { auctionPropType } from '../propTypes';
 
 const StyledItem = styled.li`
   padding: 8px 16px;
@@ -47,7 +48,7 @@ const StyledContent = styled.div`
   grid-template-columns: 1fr auto;
 `;
 
-export default function AuctionsList({ auction }) {
+function AuctionsList({ auction }) {
   const status = getStatus(auction);
   const start = decorateDate(auction.start, 'starts at ');
   const end = decorateDate(auction.end, 'ends at ');
@@ -78,3 +79,9 @@ export default function AuctionsList({ auction }) {
     </StyledItem>
   );
 }
+
+AuctionsList.propTypes = {
+  auction: auctionPropType,
+};
+
+export default AuctionsList;

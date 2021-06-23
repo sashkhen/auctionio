@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { ENDPOINT } from '../variables';
+import { ENDPOINT } from '../consts';
 
 const instance = axios.create({
   baseURL: ENDPOINT,

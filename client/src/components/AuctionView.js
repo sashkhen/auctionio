@@ -1,8 +1,10 @@
 import { Badge } from 'evergreen-ui';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { StyledDates, StyledDate } from './AuctionStyles';
 import AuctionBid from './AuctionBid';
 import { getStatus, decorateDate, getHelpText } from '../utils/auction';
+import { auctionPropType } from '../propTypes';
 
 const StyledView = styled.div`
   display: flex;
@@ -13,7 +15,7 @@ const StyledView = styled.div`
   }
 `;
 
-export default function AuctionView({ auction, isActive }) {
+function AuctionView({ auction, isActive }) {
   const status = getStatus(auction);
   const start = decorateDate(auction.start, 'starts at ');
   const end = decorateDate(auction.end, 'ends at ');
@@ -35,3 +37,10 @@ export default function AuctionView({ auction, isActive }) {
     </StyledView>
   );
 }
+
+AuctionView.propTypes = {
+  auction: auctionPropType,
+  isActive: PropTypes.bool,
+};
+
+export default AuctionView;
