@@ -33,7 +33,7 @@
 1. Clone the repo
 
    ```sh
-   git clone https://github.com/sashkhen/auctionio.git
+   git clone https://github.com/sashkhen/auctionion.git
    ```
 
 2. Update network address for client and server to point at each other: [./client/src/consts.js](./client/src/consts.js), [./server/variables.env](./client/src/consts.js)
