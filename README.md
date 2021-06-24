@@ -35,17 +35,12 @@
    ```sh
    git clone https://github.com/sashkhen/auctionio.git
    ```
-2. Install NPM packages
 
-   ```sh
-   npm install
-   ```
+2. Update network address for client and server to point at each other: [./client/src/consts.js](./client/src/consts.js), [./server/variables.env](./client/src/consts.js)
+
 3. Start a project
 
    ```sh
-   # to run both server and client simultaneously
-   npm run dev
-
    # to run server
    cd server
    npm i
@@ -56,7 +51,6 @@
    npm i
    npm run start
    ```
-
 
 
 <!-- USAGE EXAMPLES -->
